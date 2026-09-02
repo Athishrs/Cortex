@@ -7,11 +7,13 @@ import voyageai
 from app.db.models import Document, Chunk
 from google import genai
 
-
+from fastapi import HTTPException
 
 settings=get_settings()
 voyage_client=voyageai.Client(api_key=settings.voyage_api_key)
 gemini_client = genai.Client(api_key=settings.gemini_api_key)
+
+
 
 
 class DocumentStore:
@@ -28,6 +30,8 @@ class DocumentStore:
 
         splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=120)
         text_chunks = splitter.split_text(text)
+        if not text_chunks:
+         raise HTTPException(status_code=400, detail="Document content is empty")
 
         embedding_result = voyage_client.embed(
             texts=text_chunks,
