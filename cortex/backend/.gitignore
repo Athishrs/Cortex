@@ -6,40 +6,10 @@
 # macOS
 .DS_Store
 
+# Python bytecode cache
+__pycache__/
+*.pyc
+
 # VS Code
 .vscode/
-
-# JetBrains (PyCharm, etc.)
-.idea/
-
-# Helm - local/secret values files (NEVER commit real secrets)
-values-local.yaml
-values-secret.yaml
-values-secrets.yaml
-*.secrets.yaml
-charts/*/charts/
-charts/*/values-local.yaml
-
-# Kubernetes local overrides / kubeconfig
-kubeconfig
-*.kubeconfig
-.kube/
-
-# LangChain / vector store local caches
-chroma_db/
-faiss_index/
-*.index
-embeddings_cache/
-.langchain.db
-
-# Docker
-*.env.docker
-docker-compose.override.yml
-
-# Any additional local secrets/config
-secrets.yaml
-credentials.json
-*.pem
-*.key
-
-.env
+...
