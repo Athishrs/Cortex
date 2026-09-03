@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cortex-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cortex-backend
+  template:
+    metadata:
+      labels:
+        app: cortex-backend
+    spec:
+      containers:
+        - name: cortex-backend
+          image: cortex-backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: cortex-backend-config
+                  key: DATABASE_URL
+            - name: VOYAGE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cortex-backend-secrets
+                  key: VOYAGE_API_KEY
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cortex-backend-secrets
+                  key: GEMINI_API_KEY
