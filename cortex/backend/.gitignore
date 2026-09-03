@@ -45,13 +45,5 @@ credentials.json
 *.pem
 *.key
 
-.envcortex/backend/k8s/secret.yaml
-cortex/backend/.env
-# Any additional local secrets/config
-secrets.yaml
-credentials.json
-*.pem
-*.key
-
 .env
-cortex/backend/k8s/secret.yaml
+k8s/secret.yaml
