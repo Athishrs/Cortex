@@ -95,8 +95,8 @@ async def test_long_document_splits_into_multiple_chunks(client, db_session):
         assert len(chunk.content)  
 
 async def test_chunks_have_overlapping_content(client, db_session):
-    long_text = ("Sentence number %d about testing overlap behavior. " % i for i in range(100))
-    long_text = "".join(long_text).encode()
+    long_text_str = "".join("Sentence number %d about testing overlap behavior. " % i for i in range(100))
+    long_text = long_text_str.encode()
 
     with patch("app.services.document_store.voyage_client.embed") as mock_embed:
         mock_embed.side_effect = lambda texts, **kwargs: fake_embedding_result(texts)
@@ -108,14 +108,15 @@ async def test_chunks_have_overlapping_content(client, db_session):
 
     doc_id = response.json()["id"]
 
-    result = await db_session.execute(
-        select(Chunk).where(Chunk.document_id == doc_id).order_by(Chunk.id)
-    )
+    result = await db_session.execute(select(Chunk).where(Chunk.document_id == doc_id))
     chunks = result.scalars().all()
 
-    assert len(chunks) > 1
-    end_of_first = chunks[0].content[-50:]
-    assert end_of_first[:20] in chunks[1].content
+    # Sort chunks by where their content actually starts in the original text
+    chunks_in_order = sorted(chunks, key=lambda c: long_text_str.find(c.content))
+
+    assert len(chunks_in_order) > 1
+    end_of_first = chunks_in_order[0].content[-50:]
+    assert end_of_first[:20] in chunks_in_order[1].content
 async def test_empty_content_upload_handled_gracefully(client):
     empty_content = b""
 
