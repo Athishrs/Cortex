@@ -1,0 +1,17 @@
+appName: cortex-backend
+
+replicaCount: 3
+
+image:
+  repository: ghcr.io/athishrs/cortex-backend
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 8000
+  nodePort: 30080
+
+databaseUrl: "postgresql+asyncpg://cortex:cortex@host.minikube.internal:5433/cortex"
+
+voyageApiKey: "changeme"
+geminiApiKey: "changeme"
