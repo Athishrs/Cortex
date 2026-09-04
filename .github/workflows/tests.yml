@@ -82,7 +82,7 @@ jobs:
       - name: Build and push Docker image
         working-directory: cortex/backend
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/cortex-backend
+          IMAGE=ghcr.io/$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')/cortex-backend
           docker build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
           docker push $IMAGE:latest
           docker push $IMAGE:${{ github.sha }}
