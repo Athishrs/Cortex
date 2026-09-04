@@ -64,12 +64,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: test
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
         working-directory: cortex/backend
         run: |
-          docker build -t cortex-backend .
+          IMAGE=ghcr.io/${{ github.repository_owner }}/cortex-backend
+          docker build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}
